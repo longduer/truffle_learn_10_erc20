@@ -12,30 +12,21 @@ if (typeof web3 !== 'undefined') {
 }
 
 var txId = '0xc44314bdad91ab0cc1693bf96f29b3d866a771214532692b69af4a1f5d4dd02b';
-var tx = web3.eth.getTransaction(txId);
-console.info(tx.input);
+// var tx = web3.eth.getTransaction(txId);
+var receipt = web3.eth.getTransactionReceipt(txId);
 
 var source = fs.readFileSync('./contracts/SAIToken.sol', 'utf8');
-
-// console.info(source);
 var output = solc.compile(source, 1);
-//
-// for(var contractName in output.contracts){
-//     console.log(contractName + ' bytecode: ' + output.contracts[contractName].bytecode);
-//     console.log(contractName + ' abi: ' + output.contracts[contractName].interface)
-// }
-
 var abi = output.contracts[':SAIToken'];
-console.info(JSON.parse(abi.metadata).output.abi);
-//
+// console.info(JSON.parse(abi.metadata).output.abi);
 
 abi = JSON.parse(abi.metadata).output.abi;
-//
-// console.info(abi);
-// //
 abiDecoder.addABI(abi);
-//
-const decodedData = abiDecoder.decodeMethod(tx.input);
-console.info(decodedData);
+
+const decodedData = abiDecoder.decodeLogs(receipt.logs);
+console.info(JSON.stringify(decodedData));
+
+
+
 
 
